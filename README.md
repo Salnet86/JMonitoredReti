@@ -15,8 +15,7 @@ Marta Giordano
 Entrambi i membri sono i tirocinanti nel campo delle tecnologie di rete, con competenze in Java, Python, e Amministrazione di Database. Durante il tirocinio, hanno collaborato nella creazione di un'applicazione di monitoraggio per sistemi informatici e di rete.
 
 Tecnologie Utilizzate
-Java (versione 17)
-Spring Boot (versione 3.4.3)
+Java Spring Boot
 Thymeleaf (per il rendering dei template HTML)
 Maven (per la gestione delle dipendenze e la build)
 OSHI (per raccogliere informazioni sul sistema operativo e l'hardware)
@@ -24,14 +23,10 @@ Spring Boot Actuator (per esporre endpoint di monitoraggio)
 
 Installazione
 Requisiti
-Per eseguire il progetto, è necessario avere:
+Per eseguire il progetto, è necessario avere:Java maven 
 
-Java 17 o versioni successive
-Maven installato sul sistema
-Puoi scaricare e installare Java 17 e Maven dai seguenti link:
 
-Java 17
-Maven
+
 
 git clone https://github.com/Salnet86/JMonitoredReti.git
 
