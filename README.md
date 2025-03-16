@@ -33,10 +33,10 @@ Puoi scaricare e installare Java 17 e Maven dai seguenti link:
 Java 17
 Maven
 
-git clone https://github.com/tuo-username/JMonitoredReti
+git clone https://github.com/Salnet86/JMonitoredReti.git
 
 avigare nella directory del progetto
-
+mvn package
 mvn clean install
 mvn spring-boot:run
 mvn spring-boot:run
