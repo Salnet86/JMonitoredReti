@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoraggio Sistema</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Stili base per la pagina */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Layout responsive */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Link */
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #007bff;
+        }
+
+        /* Media Queries per dispositivi mobili */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Monitoraggio Sistema</h1>
+    </header>
+
+    <div class="container">
+        <h2>Monitoraggio CPU</h2>
+        <div class="chart-container">
+            <canvas id="cpuChart"></canvas>
+        </div>
+
+        <h2>Temperatura CPU</h2>
+        <div class="chart-container">
+            <canvas id="tempChart"></canvas>
+        </div>
+
+        <h2>Spazio su Disco</h2>
+        <div class="chart-container">
+            <canvas id="diskChart"></canvas>
+        </div>
+
+        <a href="/">🔙 Torna alla Home</a>
+    </div>
+<script type="module">
+    let cpuChart, tempChart, diskChart;
+    let timeLabel = 0; // Variabile per tenere traccia delle etichette dell'asse X (incrementale)
+
+    async function fetchData() {
+        const response = await fetch('/stats');
+        const data = await response.json();
+        return data;
+    }
+
+    async function updateCharts() {
+        const data = await fetchData();
+
+        // Grafico Uso CPU
+        cpuChart.data.labels.push(timeLabel++);  // Incrementa il valore dell'asse X
+        cpuChart.data.datasets[0].data.push(data.cpuUsage);
+        cpuChart.update();
+
+        // Grafico Temperatura CPU
+        tempChart.data.labels.push(timeLabel++); // Incrementa il valore dell'asse X
+        tempChart.data.datasets[0].data.push(data.temperature);
+        tempChart.update();
+
+        // Grafico Spazio su Disco
+        diskChart.data.labels.push(timeLabel++); // Incrementa il valore dell'asse X
+        diskChart.data.datasets[0].data = [
+            data.totalDiskSpace - data.freeDiskSpace,
+            data.freeDiskSpace
+        ];
+        diskChart.update();
+    }
+
+    // Inizializzazione dei grafici
+    cpuChart = new Chart(document.getElementById("cpuChart"), {
+        type: "bar",
+        data: {
+            labels: [timeLabel],
+            datasets: [{
+                label: "Uso CPU (%)",
+                data: [0],  // Inizializza con valore 0
+                borderColor: "blue",  // Imposta il colore del bordo (linea)
+                backgroundColor: "rgba(0, 0, 255, 0.2)", // Colore di sfondo (barra)
+                fill: true,  // Abilita il riempimento sotto la barra
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    tempChart = new Chart(document.getElementById("tempChart"), {
+        type: "line",
+        data: {
+            labels: [timeLabel],
+            datasets: [{
+                label: "Temperatura CPU (°C)",
+                data: [0],  // Inizializza con valore 0
+                backgroundColor: "lime",  // Colore di sfondo della linea (transparente per linee)
+                borderColor: "lime",  // Colore della linea
+                fill: false,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    diskChart = new Chart(document.getElementById("diskChart"), {
+        type: "pie",
+        data: {
+            labels: [timeLabel],
+            datasets: [{
+                data: [0, 0],  // Inizializza con valore 0
+                backgroundColor: ["#36a2eb", "#4caf50"] // Colori per le due sezioni della torta
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Esegui l'aggiornamento iniziale dei grafici
+    updateCharts();
+    setInterval(updateCharts, 5000); // Aggiorna ogni 5 secondi
+</script>
+
+
+</body>
+</html>
